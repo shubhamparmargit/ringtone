@@ -138,7 +138,8 @@ function get_api_data($data_info){
     $API_NAME = 'NEMOSOFTS_APP';
 
     $data_json = $data_info;
-    $data_arr = json_decode(urldecode(base64_decode($data_json)), true);
+    // $data_arr = json_decode(urldecode(base64_decode($data_json)), true);
+    $data_arr = json_decode($data_json, true);
     if($data_arr['application_id']==PACKAGE_NAME){
         if (!file_exists('api.php')){
             //$data['data'] = array('success' => '-1', "MSG" => "Invalid.");
@@ -161,6 +162,35 @@ function get_api_data($data_info){
         exit();
     }
     return $data_arr;
+}
+
+function generateOtp($length = 4) {
+    return substr(str_shuffle('0123456789'), 0, $length);
+}
+
+function sendOtpSms($phone_number, $otp) {
+    // Your Twilio account SID and Auth Token
+    $account_sid = 'YOUR_TWILIO_ACCOUNT_SID';
+    $auth_token = 'YOUR_TWILIO_AUTH_TOKEN';
+    $twilio_number = 'YOUR_TWILIO_PHONE_NUMBER';
+
+    $client = new Client($account_sid, $auth_token);
+
+    $message = "Your OTP code is: $otp";
+
+    $client->messages->create(
+        $phone_number, // To
+        [
+            'from' => $twilio_number, // From
+            'body' => $message
+        ]
+    );
+}
+
+function update_user_last_login($user_id, $mysqli) {
+    $user_id = intval($user_id);
+    $sql = "UPDATE tbl_users SET last_activity = NOW() WHERE id = '$user_id'";
+    mysqli_query($mysqli, $sql) or die(mysqli_error($mysqli));
 }
 
 function user_info($user_id,$field_name) {

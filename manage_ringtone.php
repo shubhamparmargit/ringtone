@@ -97,6 +97,7 @@
                                 <?php $i=0; while($row=mysqli_fetch_array($result)) { ?>
                                     <tr>
                                         <?php
+                                         $file_path = null;
                                           $audio_file=$row['ringtone_url'];
                                           if($row['audio_type']=='local'){
                                             $audio_file=$file_path.'uploads/'.basename($row['ringtone_url']);

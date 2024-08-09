@@ -1,5 +1,5 @@
 <?php
-error_reporting(0);
+// error_reporting(0);
 ob_start();
 session_start();
 
@@ -10,8 +10,8 @@ header("Content-Type: text/html;charset=UTF-8");
 
 if($_SERVER['HTTP_HOST']=="localhost" or $_SERVER['HTTP_HOST']=="192.168.1.125"){
 
-	DEFINE ('DB_USER', 'u295964305_ringtone');
-	DEFINE ('DB_PASSWORD', 'h1aG04z8M+8');
+	DEFINE ('DB_USER', 'root');
+	DEFINE ('DB_PASSWORD', '');
 	DEFINE ('DB_HOST', 'localhost');
 	DEFINE ('DB_NAME', 'u295964305_ringtone');
     

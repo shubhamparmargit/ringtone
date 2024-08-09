@@ -241,22 +241,24 @@ $mysqli->set_charset("utf8mb4");
                                 </li>
                             </ul>
                         </li>
-                        
+                        <?php /*
                         <li class="nsofts-sidebar-nav__item">
                             <a href="verification.php" class="nsofts-sidebar-nav__link <?php if ($currentFile == "verification.php") { ?>active<?php } ?>">
                                 <i class="ri-shield-check-line nsofts-sidebar-nav__icon"></i>
                                 <span class="nsofts-sidebar-nav__text">Verification</span>
                             </a>
                         </li>
+                         */?>
                     <?php } ?>
                 <?php } ?>
-                
+                <?php /*
                 <li class="nsofts-sidebar-nav__item">
                     <a href="api_urls.php" class="nsofts-sidebar-nav__link <?php if ($currentFile == "api_urls.php") { ?>active<?php } ?>">
                         <i class="ri-links-line nsofts-sidebar-nav__icon"></i>
                         <span class="nsofts-sidebar-nav__text">URLs</span>
                     </a>
                 </li>
+                 */?>
             </ul>
         </nav>
     </aside>

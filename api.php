@@ -4,7 +4,7 @@ include("includes/lb_helper.php");
 include("language/api_language.php"); 
 include("smtp_email.php");
 
-error_reporting(0);
+// error_reporting(0);
 
 $file_path = getBaseUrl();
 
@@ -1421,7 +1421,287 @@ else if($get_helper['helper_name']=="app_details"){
 	header( 'Content-Type: application/json; charset=utf-8' );
     echo $val= str_replace('\\/', '/', json_encode($set,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 	die();
+}else if ($get_helper['helper_name'] == "generate_otp") {
+    $response = array();
+
+    $phone_number = isset($get_helper['phone_number']) ? trim($get_helper['phone_number']) : '';
+
+    if (!preg_match('/^\\d{1,15}$/', $phone_number)) { // Basic validation for international phone number format
+        $response = array('MSG' => 'Invalid phone number format', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+
+    $otp = generateOtp();
+    // sendOtpSms($phone_number, $otp);
+
+    // Save OTP to session or database
+    $_SESSION['otp'] = $otp; // For simplicity, using session here
+    $_SESSION['phone_number'] = $phone_number;
+
+
+    $response = array('MSG' => 'OTP sent successfully', 'success' => '1');
+    $set[$API_NAME][] = $response;
+    header('Content-Type: application/json; charset=utf-8');
+    echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    die();
+}else if ($get_helper['helper_name'] == "login") {
+    $response = array();
+
+    $phone_number = isset($get_helper['phone_number']) ? trim($get_helper['phone_number']) : '';
+    $otp = isset($get_helper['otp']) ? trim($get_helper['otp']) : '';
+
+    if (!preg_match('/^\\d{1,15}$/', $phone_number)) {
+        $response = array('MSG' => 'Invalid phone number format', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+    if (!isset($_SESSION['otp']) || $_SESSION['otp'] != $otp || $_SESSION['phone_number'] != $phone_number) {        
+        $response = array('MSG' => 'Invalid OTP', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+
+    $sql = "SELECT * FROM tbl_users WHERE user_phone = '$phone_number'";
+    $result = mysqli_query($mysqli, $sql) or die(mysqli_error($mysqli));
+    if (mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        if ($row['status'] == 1) {
+            $response = array(
+                'user_id' => $row['id'],
+                'user_name' => $row['user_name'],
+                'user_phone' => $row['user_phone'],
+                'user_gender' => $row['user_gender'],
+                'profile_img' => $file_path . 'images/' . $row['profile_img'],
+                'MSG' => 'Login successful',
+                'success' => '1'
+            );
+            update_user_last_login($row['id'], $mysqli);
+        } else {
+            $response = array('MSG' => 'Account deactivated', 'success' => '0');
+        }
+    } else {
+        $response = array('MSG' => 'Phone number not found', 'success' => '0');
+    }
+
+    $set[$API_NAME][] = $response;
+    header('Content-Type: application/json; charset=utf-8');
+    echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    die();
+}else if ($get_helper['helper_name'] == "verify_otp") {
+    $response = array();
+
+    $phone_number = isset($get_helper['phone_number']) ? trim($get_helper['phone_number']) : '';
+    $otp = isset($get_helper['otp']) ? trim($get_helper['otp']) : '';
+
+    if (!preg_match('/^\\d{1,15}$/', $phone_number)) {
+        $response = array('MSG' => 'Invalid phone number format', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+    if (!isset($_SESSION['otp']) || $_SESSION['otp'] != $otp || $_SESSION['phone_number'] != $phone_number) {        
+        $response = array('MSG' => 'Invalid OTP', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+
+    $response = array('MSG' => 'OTP verified successfully', 'success' => '1');
+
+    $set[$API_NAME][] = $response;
+    header('Content-Type: application/json; charset=utf-8');
+    echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    die();
+}else if($get_helper['helper_name']=="get_ringtones"){
+    
+    $response = array();
+
+    $user_id = isset($get_helper['user_id']) ? intval($get_helper['user_id']) : 0;
+    $page = isset($get_helper['page']) ? intval($get_helper['page']) : 1;
+    $page_limit = isset($get_helper['page_limit']) ? intval($get_helper['page_limit']) : 15;
+    $is_hyped = isset($get_helper['is_hyped']) ? boolval($get_helper['is_hyped']) : false;
+
+    
+    // Validate page number and page limit
+    if ($page < 1 || $page_limit < 1) {
+        $response = array('MSG' => 'Invalid page number or page limit', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+
+    $limit = ($page - 1) * $page_limit;
+
+    // SQL query to fetch ringtones
+    $sql = "SELECT tbl_ringtone.*, tbl_category.category_name
+            FROM tbl_ringtone
+            LEFT JOIN tbl_category ON tbl_ringtone.cat_id = tbl_category.cid
+            WHERE tbl_ringtone.status = '1'
+            AND tbl_ringtone.active = 1
+            AND tbl_category.status = 1";
+
+    // Append the hyped condition only if is_hyped is true
+    if ($is_hyped) {
+        $sql .= " AND tbl_ringtone.is_hyped = 1";
+    }
+
+    // Order by and limit for pagination
+    $sql .= " ORDER BY tbl_ringtone.id DESC LIMIT $limit, $page_limit";
+    
+    $result = mysqli_query($mysqli, $sql);
+    
+    if (!$result) {
+        $response = array('MSG' => 'Database query failed', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+
+    $jsonObj = array();
+
+    while ($data = mysqli_fetch_assoc($result)) {
+        $row = array();
+        $row['id'] = $data['id'];
+        $row['user_id'] = $data['user_id'];
+        $row['ringtone_title'] = $data['ringtone_title'];
+        $row['ringtone_url'] = ($data['audio_type'] == "local") 
+            ? $file_path . 'uploads/' . $data['ringtone_url']
+            : $data['ringtone_url'];
+        $row['cat_id'] = $data['cat_id'];
+        $row['category_name'] = $data['category_name'];
+        $row['rate_avg'] = $data['rate_avg'];
+        $row['total_rate'] = $data['total_rate'];
+        $row['total_views'] = $data['total_views'];
+        $row['total_download'] = $data['total_download'];
+        $row['is_favorite'] = is_favorite($data['id'], $user_id);
+        
+        $jsonObj[] = $row;
+    }
+
+    $set[$API_NAME] = $jsonObj;
+    header('Content-Type: application/json; charset=utf-8');
+    echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    die();  
+}else if ($get_helper['helper_name'] == "signup") {
+
+    $email = isset($get_helper['user_email']) ? addslashes(trim($get_helper['user_email'])) : '';
+    $phone = isset($get_helper['user_phone']) ? addslashes(trim($get_helper['user_phone'])) : '';
+    $otp = isset($get_helper['otp']) ? trim($get_helper['otp']) : '';
+    $to = $email;
+    $recipient_name = isset($get_helper['user_name']) ? $get_helper['user_name'] : '';
+    $subject = str_replace('###', APP_NAME, $app_lang['register_mail_lbl']);
+    $response = array();
+
+    $sql = "SELECT * FROM tbl_users WHERE user_email = '$email'";
+    $result = mysqli_query($mysqli, $sql) or die(mysqli_error($mysqli));
+    $row = mysqli_fetch_assoc($result);
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $response = array('MSG' => $app_lang['invalid_email_format'], 'success' => '0');
+    } 
+    else if ($row['user_email'] != "") {
+        $response = array('MSG' => $app_lang['email_exist'], 'success' => '0');
+    } 
+    else if (!isset($_SESSION['otp']) || $_SESSION['otp'] != $otp) {
+        $response = array('MSG' => 'Invalid OTP', 'success' => '0');
+    }
+    else {
+        $imgName = '';
+        if ($_FILES['image_data']['name'] != "") {
+            $imgName = rand(0, 99999) . "_" . $_FILES['image_data']['name'];
+            $tpath1 = 'images/' . $imgName;
+            $pic1 = compress_image($_FILES["image_data"]["tmp_name"], $tpath1, 80);
+        }
+
+        // Insert user data into the database
+        $data = [
+            'user_type' => 'Normal',
+            'user_name' => addslashes(trim($get_helper['user_name'])),
+            'user_email' => $email,
+            'user_phone' => $phone,
+            'user_password' => md5(trim($get_helper['user_password'])),
+            'user_gender' => addslashes(trim($get_helper['user_gender'])),
+            'profile_img' => $imgName,
+            'registered_on' => strtotime(date('d-m-Y h:i:s A')),
+            'last_activity' => now(),
+            'status' => '1'
+        ];
+
+        $qry = Insert('tbl_users', $data);
+        $user_id = mysqli_insert_id($mysqli);
+
+        send_register_email($to, $recipient_name, $subject, $app_lang['normal_register_msg']);
+
+        $response = array('MSG' => $app_lang['register_success'], 'success' => '1');
+        update_activity_log($user_id);
+    }
+
+    $set[$API_NAME][] = $response;
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    die();
+}else if ($get_helper['helper_name'] == "set_random_ringtone") {
+
+    $user_id = isset($get_helper['user_id']) ? intval($get_helper['user_id']) : 0;
+    $response = array();
+
+    if ($user_id <= 0) {
+        $response = array('MSG' => 'Invalid user ID', 'success' => '0');
+    } else {
+        $user_check_sql = "SELECT * FROM tbl_users WHERE id = '$user_id' AND status = '1'";
+        $user_check_result = mysqli_query($mysqli, $user_check_sql) or die(mysqli_error($mysqli));
+        
+        if (mysqli_num_rows($user_check_result) == 0) {
+            $response = array('MSG' => 'User does not exist or is inactive', 'success' => '0');
+        } else {
+            $sql = "SELECT * FROM tbl_ringtone WHERE status = '1' AND active = '1' ORDER BY RAND() LIMIT 1";
+            $result = mysqli_query($mysqli, $sql) or die(mysqli_error($mysqli));
+            $ringtone = mysqli_fetch_assoc($result);
+
+            if ($ringtone) {
+                $data = ['ringtone_id' => $ringtone['id']];
+                $update = Update('tbl_users', $data, "WHERE id = '$user_id'");
+
+                $response = array(
+                    'ringtone_id' => $ringtone['id'],
+                    'ringtone_title' => $ringtone['ringtone_title'],
+                    'ringtone_url' => ($ringtone['audio_type'] == "local") 
+                        ? $file_path . 'uploads/' . $ringtone['ringtone_url']
+                        : $ringtone['ringtone_url'],
+                    'is_hyped' => $ringtone['is_hyped'],
+                    'play_times' => $ringtone['play_times'],
+                    'MSG' => 'Ringtone set successfully',
+                    'success' => '1'
+                );
+
+                update_activity_log($user_id);
+            } else {
+                $response = array('MSG' => 'No ringtones available', 'success' => '0');
+            }
+        }
+    }
+
+    $set[$API_NAME][] = $response;
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    die();
 }
+
+
+
+
+
 else {
     $get_helper = get_api_data($_POST['data']);
 }

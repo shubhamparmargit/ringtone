@@ -92,13 +92,22 @@
                                     <th style="width: 40px;">Image</th>
                                     <th>Name</th>
                                     <th>Email</th>
+                                    <th>Mobile</th>
                                     <th>Registered</th>
+                                    <th class="text-center">Currect Status</th>
                                     <th class="text-center">Status</th>
                                     <th style="width: 150px;" class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $i=0; while($row=mysqli_fetch_array($result)) { ?>
+                                <?php 
+                                    $i=0; while($row=mysqli_fetch_array($result)) {
+
+                                        $threshold_minutes = 10;
+                                        $threshold_time = date('Y-m-d H:i:s', strtotime("-$threshold_minutes minutes"));
+                                        $is_online = ($row['last_activity'] >= $threshold_time) ? true : false;
+
+                                    ?>
                                     <tr>
                                         <td>
                                             <div class="text-center">
@@ -114,7 +123,15 @@
                                         </td>
                                         <td><?php echo $row['user_name'];?></td>
                                         <td><?php echo $row['user_email'];?></td>
+                                        <td><?php echo $row['user_phone'];?></td>
                                         <td><?php echo date('d-m-Y',$row['registered_on']);?></td>
+                                        <td class="text-center">
+                                            <?php if ($is_online) { ?>
+                                                <span class="badge bg-success">Online</span>
+                                            <?php } else { ?>
+                                                <span class="badge bg-secondary">Offline</span>
+                                            <?php } ?>
+                                        </td>
                                         
                                         <td class="text-center" >
                                             <div class="nsofts-switch enable_disable" data-bs-toggle="tooltip" data-bs-placement="top" title="Enable / Disable">

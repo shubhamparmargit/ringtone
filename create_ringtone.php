@@ -19,6 +19,7 @@
     if(isset($_POST['submit']) and isset($_GET['add'])){
         
         $audio_type = trim($_POST['audio_type']);
+        $is_hyped = isset($_POST['is_hyped']) ? 1 : 0;
         if($audio_type=='server_url'){
             
             $audio_url = htmlentities(trim($_POST['audio_url']));
@@ -40,7 +41,9 @@
             'user_id'  =>  trim($_POST['user_id']),
             'ringtone_title'  =>  cleanInput($_POST['ringtone_title']),
             'audio_type'  =>  $audio_type,
-            'ringtone_url'  =>  $audio_url
+            'ringtone_url'  =>  $audio_url,
+            'is_hyped' => $is_hyped,
+            'play_times'  =>  cleanInput($_POST['play_times']),
         );  
         
         $qry = Insert('tbl_ringtone',$data);
@@ -179,6 +182,7 @@
                             
                             <?php if(isset($_GET['ringtone_id'])){ ?>
                                 <?php
+                                $file_path = null;
                                   $audio_file=$row['ringtone_url'];
                                   if($row['audio_type']=='local'){
                                     $audio_file=$file_path.'uploads/'.basename($row['ringtone_url']);
@@ -192,10 +196,22 @@
                                 <p><strong>Current URL:</strong> <?=$audio_file?></p>
                                 <audio id="audio" controls src="<?=$audio_file?>"></audio>  
                             </div>
+
+                            <div class="mb-3">
+                                <input type="checkbox" name="is_hyped" id="is_hyped" class="form-check-input"> <?php if(isset($row['is_hyped']) && $row['is_hyped'] == 1) { echo 'checked'; } ?>
+                                <label for="is_hyped">Mark as Hyped</label>
+                            </div>
+
+                            <div class="mb-3" id="play_timesDiv" style="display:none;">
+                                <label for="play_times" class="form-label">Play Times</label>
+                                <input type="number" name="play_times" id="play_times" class="form-control" placeholder="Enter play times, e.g. 5"><?php if(isset($_GET['ringtone_id'])){ echo $row['play_times']; } ?></textarea>
+                            </div>
                             
                         </div>
                     </div>
                 </div>
+
+
             </div>
 
         </form>
@@ -218,6 +234,14 @@
                 $("#audio_url_display").hide(); 
                 $("#audio_local_display").show();
                 $("#audio_player").hide();
+            }
+        });
+
+        $("#is_hyped").change(function(){
+           if ($(this).is(":checked")) {
+                $('#play_timesDiv').show();
+            }else{
+                 $('#play_timesDiv').hide();
             }
         });
     });
