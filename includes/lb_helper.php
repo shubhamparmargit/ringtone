@@ -138,8 +138,8 @@ function get_api_data($data_info){
     $API_NAME = 'NEMOSOFTS_APP';
 
     $data_json = $data_info;
-    // $data_arr = json_decode(urldecode(base64_decode($data_json)), true);
-    $data_arr = json_decode($data_json, true);
+    $data_arr = json_decode(urldecode(base64_decode($data_json)), true);
+    // $data_arr = json_decode($data_json, true);
     if($data_arr['application_id']==PACKAGE_NAME){
         if (!file_exists('api.php')){
             //$data['data'] = array('success' => '-1', "MSG" => "Invalid.");

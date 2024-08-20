@@ -9,7 +9,11 @@
     
     //Users
     $users_qry="SELECT * FROM tbl_users ORDER BY user_name";
-    $users_result=mysqli_query($mysqli,$users_qry); 
+    $users_result=mysqli_query($mysqli,$users_qry);
+
+
+    $states_qry = "SELECT * FROM states ORDER BY name";
+    $states_result = mysqli_query($mysqli, $states_qry);
     
     //Category
     $cat_qry="SELECT * FROM tbl_category ORDER BY category_name";
@@ -38,7 +42,9 @@
         
         $data = array( 
             'cat_id'  =>  trim($_POST['cat_id']),
-            'user_id'  =>  trim($_POST['user_id']),
+            // 'user_id'  =>  trim($_POST['user_id']),
+            'state_id'  =>  trim($_POST['state_id']),
+            'city_id'  =>  trim($_POST['city_id']),
             'ringtone_title'  =>  cleanInput($_POST['ringtone_title']),
             'audio_type'  =>  $audio_type,
             'ringtone_url'  =>  $audio_url,
@@ -53,11 +59,13 @@
         header( "Location:manage_ringtone.php");
         exit;
     }
-    
     if(isset($_GET['ringtone_id'])){
         $qry="SELECT * FROM tbl_ringtone where id='".$_GET['ringtone_id']."'";
         $result=mysqli_query($mysqli,$qry);
         $row=mysqli_fetch_assoc($result);
+
+        $city_qry = "SELECT * FROM cities WHERE state_id = (SELECT state_id FROM cities WHERE id = '".$row['city_id']."') ORDER BY name";
+                $cities_result = mysqli_query($mysqli, $city_qry);
     }
     
     if(isset($_POST['submit']) and isset($_POST['ringtone_id'])){
@@ -83,10 +91,11 @@
                 $audio_url=$row['ringtone_url'];
             }
         }
-        
         $data = array( 
             'cat_id'  =>  trim($_POST['cat_id']),
-            'user_id'  =>  trim($_POST['user_id']),
+            // 'user_id'  =>  trim($_POST['user_id']),
+            'state_id'  =>  trim($_POST['state_id']),
+            'city_id'  =>  trim($_POST['city_id']),
             'ringtone_title'  =>  cleanInput($_POST['ringtone_title']),
             'audio_type'  =>  $audio_type,
             'ringtone_url'  =>  $audio_url
@@ -118,7 +127,7 @@
                     <div class="card h-100">
                         <div class="card-body p-4">
                             <h5 class="mb-4"><?=$page_title ?></h5>
-                            
+                            <?php /*
                             <div class="mb-3">
                                 <select name="user_id" id="user_id" class="nsofts-select " required>
                                     <option value="">--Select User --</option>
@@ -127,6 +136,33 @@
                                             <option value="<?php echo $users_row['id'];?>" <?php if($users_row['id']==$row['user_id']){?>selected<?php }?>><?php echo $users_row['user_name'];?></option>	          							 
                                         <?php }else{ ?>
                                             <option value="<?php echo $users_row['id'];?>"><?php echo $users_row['user_name'];?></option>   							 
+                                        <?php } ?>
+                                    <?php } ?>
+                                </select>
+                            </div> */ ?>
+                            <!-- State Dropdown -->
+                            <div class="mb-3">
+                                <select name="state_id" id="state_id" class="nsofts-select" required>
+                                    <option value="">--Select State--</option>
+                                    <?php while($states_row = mysqli_fetch_array($states_result)) { ?>
+                                        <option value="<?php echo $states_row['id']; ?>" 
+                                            <?php if(isset($_GET['ringtone_id']) && $states_row['id'] == $row['state_id']) { ?> selected <?php } ?>>
+                                            <?php echo $states_row['name']; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+
+                            <!-- City Dropdown -->
+                            <div class="mb-3">
+                                <select name="city_id" id="city_id" class="nsofts-select" required>
+                                    <option value="">--Select City--</option>
+                                    <?php if (isset($cities_result)) { ?>
+                                        <?php while ($cities_row = mysqli_fetch_array($cities_result)) { ?>
+                                            <option value="<?php echo $cities_row['id']; ?>" 
+                                                <?php if(isset($_GET['ringtone_id']) && $cities_row['id'] == $row['city_id']) { ?> selected <?php } ?>>
+                                                <?php echo $cities_row['name']; ?>
+                                            </option>
                                         <?php } ?>
                                     <?php } ?>
                                 </select>
@@ -243,6 +279,17 @@
             }else{
                  $('#play_timesDiv').hide();
             }
+        });
+        $("#state_id").change(function(){
+            var state_id = $(this).val();
+            $.ajax({
+                url: "get_cities.php",
+                type: "POST",
+                data: { state_id: state_id },
+                success: function(data) {
+                    $("#city_id").html(data);
+                }
+            });
         });
     });
 
