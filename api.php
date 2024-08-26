@@ -1585,6 +1585,7 @@ else if($get_helper['helper_name']=="app_details"){
         $row['total_views'] = $data['total_views'];
         $row['total_download'] = $data['total_download'];
         $row['is_favorite'] = is_favorite($data['id'], $user_id);
+        $row['is_hyped'] = $data['is_hyped'];
         
         $jsonObj[] = $row;
     }
@@ -1634,7 +1635,7 @@ else if($get_helper['helper_name']=="app_details"){
             'user_gender' => addslashes(trim($get_helper['user_gender'])),
             'profile_img' => $imgName,
             'registered_on' => strtotime(date('d-m-Y h:i:s A')),
-            'last_activity' => now(),
+            'last_activity' => date('Y-m-d H:i:s'),
             'status' => '1'
         ];
 

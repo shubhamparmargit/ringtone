@@ -140,6 +140,11 @@
                                     <?php } ?>
                                 </select>
                             </div> */ ?>
+                            <div class="mb-3">
+                                <select name="country_id" id="country_id" class="nsofts-select">
+                                    <option value="">India</option>
+                                </select>
+                            </div>
                             <!-- State Dropdown -->
                             <div class="mb-3">
                                 <select name="state_id" id="state_id" class="nsofts-select" required>

@@ -48,6 +48,7 @@
                                 <div class="col-sm-10">
                                     <select name="user_id" id="user_id" class="nsofts-select" required>
                                         <option value="">--Select User--</option>
+                                        <option value="0">All Users</option>
                                         <?php while($users_row=mysqli_fetch_array($users_result)){ ?>      
                                             <option value="<?php echo $users_row['id'];?>"><?php echo $users_row['user_name'];?></option> 
                                         <?php } ?> 
