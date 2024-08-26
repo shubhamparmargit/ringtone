@@ -1540,8 +1540,7 @@ else if($get_helper['helper_name']=="app_details"){
         die();
     }
 
-    // Fetch city_id based on user_id
-    $city_sql = "SELECT city_id FROM users WHERE id = $user_id";
+    $city_sql = "SELECT city_id FROM tbl_users WHERE id = $user_id";
     $city_result = mysqli_query($mysqli, $city_sql);
     $city_data = mysqli_fetch_assoc($city_result);
     $city_id = isset($city_data['city_id']) ? intval($city_data['city_id']) : 0;
@@ -1595,6 +1594,7 @@ else if($get_helper['helper_name']=="app_details"){
         $row['total_download'] = $data['total_download'];
         $row['is_favorite'] = is_favorite($data['id'], $user_id);
         $row['is_hyped'] = $data['is_hyped'];
+        $row['play_times'] = $data['play_times'];
         $row['created_at'] = $data['created_at'];
         
         $jsonObj[] = $row;
