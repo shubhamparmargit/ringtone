@@ -1540,9 +1540,15 @@ else if($get_helper['helper_name']=="app_details"){
         die();
     }
 
+    // Fetch city_id based on user_id
+    $city_sql = "SELECT city_id FROM users WHERE id = $user_id";
+    $city_result = mysqli_query($mysqli, $city_sql);
+    $city_data = mysqli_fetch_assoc($city_result);
+    $city_id = isset($city_data['city_id']) ? intval($city_data['city_id']) : 0;
+
+
     $limit = ($page - 1) * $page_limit;
 
-    // SQL query to fetch ringtones
     $sql = "SELECT tbl_ringtone.*, tbl_category.category_name
             FROM tbl_ringtone
             LEFT JOIN tbl_category ON tbl_ringtone.cat_id = tbl_category.cid
@@ -1550,12 +1556,15 @@ else if($get_helper['helper_name']=="app_details"){
             AND tbl_ringtone.active = 1
             AND tbl_category.status = 1";
 
-    // Append the hyped condition only if is_hyped is true
+
+    if ($city_id > 0) {
+        $sql .= " AND tbl_ringtone.city_id = $city_id";
+    }
+
     if ($is_hyped) {
         $sql .= " AND tbl_ringtone.is_hyped = 1";
     }
 
-    // Order by and limit for pagination
     $sql .= " ORDER BY tbl_ringtone.id DESC LIMIT $limit, $page_limit";
     
     $result = mysqli_query($mysqli, $sql);
@@ -1603,6 +1612,8 @@ else if($get_helper['helper_name']=="app_details"){
     $to = $email;
     $recipient_name = isset($get_helper['user_name']) ? $get_helper['user_name'] : '';
     $subject = str_replace('###', APP_NAME, $app_lang['register_mail_lbl']);
+    $state_id = isset($get_helper['state_id']) ? trim($get_helper['state_id']) : '';
+    $city_id = isset($get_helper['city_id']) ? trim($get_helper['city_id']) : '';
     $response = array();
 
     $sql = "SELECT * FROM tbl_users WHERE user_email = '$email'";
@@ -1637,7 +1648,9 @@ else if($get_helper['helper_name']=="app_details"){
             'profile_img' => $imgName,
             'registered_on' => strtotime(date('d-m-Y h:i:s A')),
             'last_activity' => date('Y-m-d H:i:s'),
-            'status' => '1'
+            'status' => '1',
+            'state_id' => $state_id,
+            'city_id' => $city_id,
         ];
 
         $qry = Insert('tbl_users', $data);
@@ -1698,10 +1711,60 @@ else if($get_helper['helper_name']=="app_details"){
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
     die();
+}else if ($get_helper['helper_name'] == "get_states") {
+
+    $response = array();
+
+    $sql = "SELECT id, name FROM states ORDER BY name ASC";
+    $result = mysqli_query($mysqli, $sql);
+    
+    if (!$result) {
+        $response = array('MSG' => 'Database query failed', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+
+    $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    $set[$API_NAME] = $data;
+    header('Content-Type: application/json; charset=utf-8');
+    echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    die();
+}else if ($get_helper['helper_name'] == "get_cities") {
+
+    $response = array();
+
+    $state_id = isset($get_helper['state_id']) ? intval($get_helper['state_id']) : 0;
+
+    if ($state_id < 1) {
+        $response = array('MSG' => 'Invalid state ID', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+
+    $sql = "SELECT id, name FROM cities WHERE state_id = $state_id ORDER BY name ASC";
+    $result = mysqli_query($mysqli, $sql);
+    
+    if (!$result) {
+        $response = array('MSG' => 'Database query failed', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+
+    // Fetch all rows at once
+    $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    $set[$API_NAME] = $data;
+    header('Content-Type: application/json; charset=utf-8');
+    echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    die();
 }
-
-
-
 
 
 else {
