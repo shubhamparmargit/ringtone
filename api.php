@@ -1586,6 +1586,7 @@ else if($get_helper['helper_name']=="app_details"){
         $row['total_download'] = $data['total_download'];
         $row['is_favorite'] = is_favorite($data['id'], $user_id);
         $row['is_hyped'] = $data['is_hyped'];
+        $row['created_at'] = $data['created_at'];
         
         $jsonObj[] = $row;
     }
