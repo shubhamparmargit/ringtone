@@ -1641,9 +1641,9 @@ else if($get_helper['helper_name']=="app_details"){
         $data = [
             'user_type' => 'Normal',
             'user_name' => addslashes(trim($get_helper['user_name'])),
-            'user_email' => $email,
+            // 'user_email' => $email,
             'user_phone' => $phone,
-            'user_password' => md5(trim($get_helper['user_password'])),
+            // 'user_password' => md5(trim($get_helper['user_password'])),
             'user_gender' => addslashes(trim($get_helper['user_gender'])),
             'profile_img' => $imgName,
             'registered_on' => strtotime(date('d-m-Y h:i:s A')),
