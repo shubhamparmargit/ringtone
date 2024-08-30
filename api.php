@@ -1616,9 +1616,14 @@ else if($get_helper['helper_name']=="app_details"){
     $city_id = isset($get_helper['city_id']) ? trim($get_helper['city_id']) : '';
     $response = array();
 
-    $sql = "SELECT * FROM tbl_users WHERE user_email = '$email'";
-    $result = mysqli_query($mysqli, $sql) or die(mysqli_error($mysqli));
-    $row = mysqli_fetch_assoc($result);
+    // $sql = "SELECT * FROM tbl_users WHERE user_email = '$email'";
+    // $result = mysqli_query($mysqli, $sql) or die(mysqli_error($mysqli));
+    // $row = mysqli_fetch_assoc($result);
+
+    // Check if the phone number already exists
+    $sqlPhone = "SELECT * FROM tbl_users WHERE user_phone = '$phone'";
+    $resultPhone = mysqli_query($mysqli, $sqlPhone) or die(mysqli_error($mysqli));
+    $rowPhone = mysqli_fetch_assoc($resultPhone);
 
     // if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     //     $response = array('MSG' => $app_lang['invalid_email_format'], 'success' => '0');
@@ -1626,7 +1631,10 @@ else if($get_helper['helper_name']=="app_details"){
     // else if ($row['user_email'] != "") {
     //     $response = array('MSG' => $app_lang['email_exist'], 'success' => '0');
     // } 
-    if (!isset($_SESSION['otp']) || $_SESSION['otp'] != $otp) {
+    if (isset($rowPhone['user_phone']) && $rowPhone['user_phone'] != "") {
+        $response = array('MSG' => $app_lang['phone_exist'], 'success' => '0');
+    }
+    else if (!isset($_SESSION['otp']) || $_SESSION['otp'] != $otp) {
         $response = array('MSG' => 'Invalid OTP', 'success' => '0');
     }
     else {
