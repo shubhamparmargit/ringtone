@@ -1620,13 +1620,13 @@ else if($get_helper['helper_name']=="app_details"){
     $result = mysqli_query($mysqli, $sql) or die(mysqli_error($mysqli));
     $row = mysqli_fetch_assoc($result);
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $response = array('MSG' => $app_lang['invalid_email_format'], 'success' => '0');
-    } 
-    else if ($row['user_email'] != "") {
-        $response = array('MSG' => $app_lang['email_exist'], 'success' => '0');
-    } 
-    else if (!isset($_SESSION['otp']) || $_SESSION['otp'] != $otp) {
+    // if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    //     $response = array('MSG' => $app_lang['invalid_email_format'], 'success' => '0');
+    // } 
+    // else if ($row['user_email'] != "") {
+    //     $response = array('MSG' => $app_lang['email_exist'], 'success' => '0');
+    // } 
+    if (!isset($_SESSION['otp']) || $_SESSION['otp'] != $otp) {
         $response = array('MSG' => 'Invalid OTP', 'success' => '0');
     }
     else {
