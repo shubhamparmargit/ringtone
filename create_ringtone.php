@@ -24,6 +24,7 @@
         
         $audio_type = trim($_POST['audio_type']);
         $is_hyped = isset($_POST['is_hyped']) ? 1 : 0;
+        $is_all = isset($_POST['is_all']) ? 1 : 0;
         if($audio_type=='server_url'){
             
             $audio_url = htmlentities(trim($_POST['audio_url']));
@@ -49,6 +50,7 @@
             'audio_type'  =>  $audio_type,
             'ringtone_url'  =>  $audio_url,
             'is_hyped' => $is_hyped,
+            'is_all' => $is_all,
             'play_times'  =>  cleanInput($_POST['play_times']),
         );  
         
@@ -141,9 +143,8 @@
                                 </select>
                             </div> */ ?>
                             <div class="mb-3">
-                                <select name="country_id" id="country_id" class="nsofts-select">
-                                    <option value="">India</option>
-                                </select>
+                                <input type="checkbox" name="is_all" id="is_all" class="form-check-input" <?php if(isset($row['is_all']) && $row['is_all'] == 1) { echo 'checked'; } ?>>
+                                <label for="is_all">All India</label>
                             </div>
                             <!-- State Dropdown -->
                             <div class="mb-3">
@@ -296,6 +297,20 @@
                 }
             });
         });
+
+         $("#is_all").change(function() {
+            if ($(this).is(":checked")) {
+                // Remove required attribute when is_all is checked
+                $("#state_id").prop('required', false);
+                $("#city_id").prop('required', false);
+            } else {
+                // Add required attribute when is_all is unchecked
+                $("#state_id").prop('required', true);
+                $("#city_id").prop('required', true);
+            }
+        });
+
+         $("#is_all").trigger('change');
     });
 
     var objectUrl;

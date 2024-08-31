@@ -1557,7 +1557,9 @@ else if($get_helper['helper_name']=="app_details"){
 
 
     if ($city_id > 0) {
-        $sql .= " AND tbl_ringtone.city_id = $city_id";
+        $sql .= " AND (tbl_ringtone.city_id = $city_id OR tbl_ringtone.is_all = 1)";
+    } else {
+        $sql .= " AND tbl_ringtone.is_all = 1";
     }
 
     if ($is_hyped) {
@@ -1594,6 +1596,9 @@ else if($get_helper['helper_name']=="app_details"){
         $row['total_download'] = $data['total_download'];
         $row['is_favorite'] = is_favorite($data['id'], $user_id);
         $row['is_hyped'] = $data['is_hyped'];
+        $row['is_all'] = $data['is_all'];
+        $row['state_id'] = $data['state_id'];
+        $row['city_id'] = $data['city_id'];
         $row['play_times'] = $data['play_times'];
         $row['created_at'] = $data['created_at'];
         
