@@ -296,6 +296,11 @@
                     $("#city_id").html(data);
                 }
             });
+            $("#is_all").prop("checked", false);
+        });
+
+        $("#city_id").change(function(){
+            $("#is_all").prop("checked", false);
         });
 
          $("#is_all").change(function() {
