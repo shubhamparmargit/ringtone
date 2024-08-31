@@ -1666,6 +1666,22 @@ else if($get_helper['helper_name']=="app_details"){
 
         send_register_email($to, $recipient_name, $subject, $app_lang['normal_register_msg']);
 
+         // Fetch the inserted user's details
+        $sql = "SELECT * FROM tbl_users WHERE id = '$user_id'";
+        $result = mysqli_query($mysqli, $sql);
+        $row = mysqli_fetch_assoc($result);
+
+        // Prepare the response with the user's data
+        $response = array(
+            'user_id' => $row['id'],
+            'user_name' => $row['user_name'],
+            'user_phone' => $row['user_phone'],
+            'user_gender' => $row['user_gender'],
+            'profile_img' => $file_path . 'images/' . $row['profile_img'],
+            'MSG' => $app_lang['register_success'],
+            'success' => '1'
+        );
+
         $response = array('MSG' => $app_lang['register_success'], 'success' => '1');
         update_activity_log($user_id);
     }
