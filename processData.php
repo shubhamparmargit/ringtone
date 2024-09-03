@@ -128,7 +128,7 @@
                     mysqli_query($mysqli, $sqlDelete);
                 } 
 				
-				else if($tbl_nm=='tbl_ringtone'){
+				else if($table=='tbl_ringtone'){
                     
                     $deleteSql = "DELETE FROM tbl_ringtone WHERE `id` IN ($ids)";
                     mysqli_query($mysqli, $deleteSql);
@@ -142,7 +142,7 @@
                     $deleteSql = "DELETE FROM tbl_favourite WHERE `post_id` IN ($ids)";
                     mysqli_query($mysqli, $deleteSql);
                     
-                    $deleteSql = "DELETE FROM $tbl_nm WHERE `id` IN ($ids)";
+                    $deleteSql = "DELETE FROM $table WHERE `id` IN ($ids)";
                     mysqli_query($mysqli, $deleteSql);
                 }
                 

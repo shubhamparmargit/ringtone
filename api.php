@@ -1637,14 +1637,14 @@ else if($get_helper['helper_name']=="app_details"){
     //     $response = array('MSG' => $app_lang['email_exist'], 'success' => '0');
     // } 
     if (isset($rowPhone['user_phone']) && $rowPhone['user_phone'] != "") {
-        $response = array('MSG' => $app_lang['phone_exist'], 'success' => '0');
+        $response = array('MSG' => 'Phone number already registered', 'success' => '0');
     }
     else if (!isset($_SESSION['otp']) || $_SESSION['otp'] != $otp) {
         $response = array('MSG' => 'Invalid OTP', 'success' => '0');
     }
     else {
         $imgName = '';
-        if ($_FILES['image_data']['name'] != "") {
+        if (isset($_FILES['image_data']) && $_FILES['image_data']['name'] != "") {
             $imgName = rand(0, 99999) . "_" . $_FILES['image_data']['name'];
             $tpath1 = 'images/' . $imgName;
             $pic1 = compress_image($_FILES["image_data"]["tmp_name"], $tpath1, 80);

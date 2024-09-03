@@ -3,7 +3,7 @@
     require("includes/lb_helper.php");
     require("language/language.php");
     
-    $tableName="tbl_reports";   
+    $tableName="tbl_users";   
     $targetpage = "manage_report.php"; 
     $limit = 15; 
 
@@ -22,7 +22,7 @@
         $start = 0; 
     } 
     
-    $sql_query="SELECT * FROM tbl_reports ORDER BY tbl_reports.`id` DESC LIMIT $start, $limit"; 
+    $sql_query="SELECT * FROM tbl_users ORDER BY tbl_users.`id` DESC LIMIT $start, $limit"; 
     $result=mysqli_query($mysqli,$sql_query) or die(mysqli_error($mysqli));
 ?>
 
@@ -49,31 +49,58 @@
             <div class="card-body p-4">
                 <?php if(mysqli_num_rows($result) > 0){ ?>
                     <div class="row g-4">
-                        <table class="table ">
+                        <table class="table">
                             <thead>
                                 <tr>
+                                    <th style="width: 40px;">Image</th>
                                     <th>Name</th>
-                                    <th>Post title</th>
-                                    <th>Report</th>
-                                    <th class="text-center">Date</th>
-                                    <th style="width: 200px;" class="text-center">Actions</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th>Registered</th>
+                                    <th class="text-center">Currect Status</th>
+                                    <th class="text-center">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $i=0; while($row=mysqli_fetch_array($result)) { ?>
+                                <?php 
+                                    $i=0; while($row=mysqli_fetch_array($result)) {
+
+                                        $threshold_minutes = 10;
+                                        $threshold_time = date('Y-m-d H:i:s', strtotime("-$threshold_minutes minutes"));
+                                        $is_online = ($row['last_activity'] >= $threshold_time) ? true : false;
+
+                                    ?>
                                     <tr>
-                                        <td><?php echo user_info($row['user_id'],"user_name");?></td>
-                                        <td><?php echo $row['report_title'];?></td>
-                                        <td><?php echo $row['report_msg'];?></td>
-                                        <td class="text-center"><?php echo date('d-m-Y',$row['report_on']);?></td>
-                                        
+                                        <td>
+                                            <div class="text-center">
+                                                <?php if($row['user_type']=='Google'){?>
+                                                    <img src="assets/images/google-logo.png" class="social_img" alt="">
+                                                <?php }?>
+                                                <?php if($row['profile_img']!="" AND file_exists("images/".$row['profile_img'])){?>
+                                                    <img src="images/<?php echo $row['profile_img']?>"alt="">
+                                                <?php }else{?>
+                                                    <img src="assets/images/user_photo.png" alt="">
+                                                <?php }?>
+                                            </div>
+                                        </td>
+                                        <td><?php echo $row['user_name'];?></td>
+                                        <td><?php echo $row['user_email'];?></td>
+                                        <td><?php echo $row['user_phone'];?></td>
+                                        <td><?php echo date('d-m-Y',$row['registered_on']);?></td>
                                         <td class="text-center">
-                                            <a href="view_report.php?report_id=<?php echo $row['id']; ?>" class="btn btn-primary btn-icon" style="padding: 10px 10px !important;  margin-right: 10px !important;" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report">
-                                                <i class="ri-honour-line"></i>
-                                            </a>
-                                            <a href="javascript:void(0)" class="btn btn-danger btn-icon btn_delete" data-id="<?php echo $row['id'];?>" data-table="<?=$tableName ?>" style="padding: 10px 10px !important;" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
-                                                <i class="ri-delete-bin-line"></i>
-                                            </a>
+                                            <?php if ($is_online) { ?>
+                                                <span class="badge bg-success">Online</span>
+                                            <?php } else { ?>
+                                                <span class="badge bg-secondary">Offline</span>
+                                            <?php } ?>
+                                        </td>
+                                        
+                                        <td class="text-center" >
+                                            <?php if ($row['status'] == 1) { ?>
+                                                <span class="badge bg-success">Enable</span>
+                                            <?php } else { ?>
+                                                <span class="badge bg-danger">Disable</span>
+                                            <?php } ?>
                                         </td>
                                     </tr>
                                  <?php $i++; } ?>
