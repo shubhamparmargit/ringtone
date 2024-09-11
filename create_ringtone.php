@@ -70,9 +70,11 @@
                 $cities_result = mysqli_query($mysqli, $city_qry);
     }
     
-    if(isset($_POST['submit']) and isset($_POST['ringtone_id'])){
-        
+    if(isset($_POST['submit']) and isset($_GET['ringtone_id'])){
+
         $audio_type = trim($_POST['audio_type']);
+        $is_hyped = isset($_POST['is_hyped']) ? 1 : 0;
+        $is_all = isset($_POST['is_all']) ? 1 : 0;
         if($audio_type=='server_url'){
             
             $audio_url = htmlentities(trim($_POST['audio_url']));
@@ -100,14 +102,17 @@
             'city_id'  =>  trim($_POST['city_id']),
             'ringtone_title'  =>  cleanInput($_POST['ringtone_title']),
             'audio_type'  =>  $audio_type,
-            'ringtone_url'  =>  $audio_url
+            'ringtone_url'  =>  $audio_url,
+            'is_hyped' => $is_hyped,
+            'is_all' => $is_all,
+            'play_times'  =>  cleanInput($_POST['play_times']),
         ); 
         
-        $category_edit=Update('tbl_ringtone', $data, "WHERE id = '".$_POST['ringtone_id']."'");
+        $category_edit=Update('tbl_ringtone', $data, "WHERE id = '".$_GET['ringtone_id']."'");
         
         $_SESSION['msg']="11";
         $_SESSION['class']='success';
-        header( "Location:create_ringtone.php?ringtone_id=".$_POST['ringtone_id']);
+        header( "Location:create_ringtone.php?ringtone_id=".$_GET['ringtone_id']);
         exit;
     }
 
