@@ -89,9 +89,9 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th style="width: 40px;">Image</th>
+                                    <!--<th style="width: 40px;">Image</th>-->
                                     <th>Name</th>
-                                    <th>Email</th>
+                                    <!--<th>Email</th>-->
                                     <th>Mobile</th>
                                     <th>Registered</th>
                                     <th class="text-center">Currect Status</th>
@@ -109,20 +109,20 @@
 
                                     ?>
                                     <tr>
-                                        <td>
-                                            <div class="text-center">
-                                                <?php if($row['user_type']=='Google'){?>
-                                                    <img src="assets/images/google-logo.png" class="social_img" alt="">
-                                                <?php }?>
-                                        	    <?php if($row['profile_img']!="" AND file_exists("images/".$row['profile_img'])){?>
-                                                    <img src="images/<?php echo $row['profile_img']?>"alt="">
-                                                <?php }else{?>
-                                                    <img src="assets/images/user_photo.png" alt="">
-                                                <?php }?>
-                                            </div>
-                                        </td>
+                                        <!--<td>-->
+                                        <!--    <div class="text-center">-->
+                                        <!--        <?php if($row['user_type']=='Google'){?>-->
+                                        <!--            <img src="assets/images/google-logo.png" class="social_img" alt="">-->
+                                        <!--        <?php }?>-->
+                                        <!--	    <?php if($row['profile_img']!="" AND file_exists("images/".$row['profile_img'])){?>-->
+                                        <!--            <img src="images/<?php echo $row['profile_img']?>"alt="">-->
+                                        <!--        <?php }else{?>-->
+                                        <!--            <img src="assets/images/user_photo.png" alt="">-->
+                                        <!--        <?php }?>-->
+                                        <!--    </div>-->
+                                        <!--</td>-->
                                         <td><?php echo $row['user_name'];?></td>
-                                        <td><?php echo $row['user_email'];?></td>
+                                        <!--<td><?php echo $row['user_email'];?></td>-->
                                         <td><?php echo $row['user_phone'];?></td>
                                         <td><?php echo date('d-m-Y',$row['registered_on']);?></td>
                                         <td class="text-center">

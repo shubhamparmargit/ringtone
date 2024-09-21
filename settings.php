@@ -127,15 +127,15 @@
                                 <span>General</span>
                             </button>
                             
-                            <button class="nav-link" id="nsofts_setting_2" data-bs-toggle="pill" data-bs-target="#nsofts_setting_content_2" type="button" role="tab" aria-controls="nsofts_setting_2" aria-selected="false">
-                                <i class="ri-mail-settings-line"></i>
-                                <span>SMTP Settings</span>
-                            </button>
+                            <!--<button class="nav-link" id="nsofts_setting_2" data-bs-toggle="pill" data-bs-target="#nsofts_setting_content_2" type="button" role="tab" aria-controls="nsofts_setting_2" aria-selected="false">-->
+                            <!--    <i class="ri-mail-settings-line"></i>-->
+                            <!--    <span>SMTP Settings</span>-->
+                            <!--</button>-->
                             
-                            <button class="nav-link" id="nsofts_setting_3" data-bs-toggle="pill" data-bs-target="#nsofts_setting_content_3" type="button" role="tab" aria-controls="nsofts_setting_3" aria-selected="false">
-                                <i class="ri-mail-send-line"></i>
-                                <span>Check Mail Confi</span>
-                            </button>
+                            <!--<button class="nav-link" id="nsofts_setting_3" data-bs-toggle="pill" data-bs-target="#nsofts_setting_content_3" type="button" role="tab" aria-controls="nsofts_setting_3" aria-selected="false">-->
+                            <!--    <i class="ri-mail-send-line"></i>-->
+                            <!--    <span>Check Mail Confi</span>-->
+                            <!--</button>-->
                                 
                         </div>
                     </div>

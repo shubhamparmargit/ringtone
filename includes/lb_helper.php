@@ -165,7 +165,8 @@ function get_api_data($data_info){
 }
 
 function generateOtp($length = 4) {
-    return substr(str_shuffle('0123456789'), 0, $length);
+    // return substr(str_shuffle('0123456789'), 0, $length);
+    return 1234;
 }
 
 function sendOtpSms($phone_number, $otp) {

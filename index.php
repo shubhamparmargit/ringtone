@@ -238,7 +238,7 @@
                                     <div class="mb-3">
                                         <button  type="submit" class="btn btn-primary btn-lg w-100">Sign in</button>
                                     </div>
-                                    <p class="text-center">New on our platform? <a href="auth_register.php" class="text-decoration-none">Create an account</a></p>
+                                    <!--<p class="text-center">New on our platform? <a href="auth_register.php" class="text-decoration-none">Create an account</a></p>-->
                                 </form>
                             <?php } ?>
                         </div>

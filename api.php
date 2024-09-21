@@ -1609,6 +1609,115 @@ else if($get_helper['helper_name']=="app_details"){
     header('Content-Type: application/json; charset=utf-8');
     echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
     die();  
+}else if($get_helper['helper_name']=="get_latest_ringtones"){
+    
+    $response = array();
+
+    $user_id = isset($get_helper['user_id']) ? intval($get_helper['user_id']) : 0;
+    $page = isset($get_helper['page']) ? intval($get_helper['page']) : 1;
+    $page_limit = isset($get_helper['page_limit']) ? intval($get_helper['page_limit']) : 15;
+    $is_hyped = isset($get_helper['is_hyped']) ? boolval($get_helper['is_hyped']) : false;
+
+    
+    // Validate page number and page limit
+    if ($page < 1 || $page_limit < 1) {
+        $response = array('MSG' => 'Invalid page number or page limit', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+
+    $city_sql = "SELECT city_id FROM tbl_users WHERE id = $user_id";
+    $city_result = mysqli_query($mysqli, $city_sql);
+    $city_data = mysqli_fetch_assoc($city_result);
+    $city_id = isset($city_data['city_id']) ? intval($city_data['city_id']) : 0;
+
+
+    $limit = ($page - 1) * $page_limit;
+
+    $sql = "SELECT tbl_ringtone.*, tbl_category.category_name
+            FROM tbl_ringtone
+            LEFT JOIN tbl_category ON tbl_ringtone.cat_id = tbl_category.cid
+            WHERE tbl_ringtone.status = '1'
+            AND tbl_ringtone.active = 1
+            AND tbl_category.status = 1";
+
+
+    if ($city_id > 0) {
+        $sql .= " AND (tbl_ringtone.city_id = $city_id OR tbl_ringtone.is_all = 1)";
+    } else {
+        $sql .= " AND tbl_ringtone.is_all = 1";
+    }
+
+    if ($is_hyped) {
+        $sql .= " AND tbl_ringtone.is_hyped = 1";
+    }
+
+    $sql .= " ORDER BY tbl_ringtone.id DESC LIMIT $limit, $page_limit";
+    
+    $result = mysqli_query($mysqli, $sql);
+    
+    if (!$result) {
+        $response = array('MSG' => 'Database query failed', 'success' => '0');
+        $set[$API_NAME][] = $response;
+        header('Content-Type: application/json; charset=utf-8');
+        echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die();
+    }
+
+
+    $sql_latest = "SELECT MAX(created_at) as latest_ringtone_date
+                   FROM tbl_ringtone
+                   WHERE status = '1'
+                   AND active = 1";
+
+    if ($city_id > 0) {
+        $sql_latest .= " AND (city_id = $city_id OR is_all = 1)";
+    } else {
+        $sql_latest .= " AND is_all = 1";
+    }
+
+    if ($is_hyped) {
+        $sql_latest .= " AND is_hyped = 1";
+    }
+
+    $result_latest = mysqli_query($mysqli, $sql_latest);
+    $latest_data = mysqli_fetch_assoc($result_latest);
+    $latest_ringtone_date = isset($latest_data['latest_ringtone_date']) ? $latest_data['latest_ringtone_date'] : null;
+
+    $jsonObj = array();
+    $jsonObj['data'] = [];
+    $jsonObj['latest_ringtone_date'] = $latest_ringtone_date;
+    while ($data = mysqli_fetch_assoc($result)) {
+        $row = array();
+        $row['id'] = $data['id'];
+        $row['user_id'] = $data['user_id'];
+        $row['ringtone_title'] = $data['ringtone_title'];
+        $row['ringtone_url'] = ($data['audio_type'] == "local") 
+            ? $file_path . 'uploads/' . $data['ringtone_url']
+            : $data['ringtone_url'];
+        $row['cat_id'] = $data['cat_id'];
+        $row['category_name'] = $data['category_name'];
+        $row['rate_avg'] = $data['rate_avg'];
+        $row['total_rate'] = $data['total_rate'];
+        $row['total_views'] = $data['total_views'];
+        $row['total_download'] = $data['total_download'];
+        $row['is_favorite'] = is_favorite($data['id'], $user_id);
+        $row['is_hyped'] = $data['is_hyped'];
+        $row['is_all'] = $data['is_all'];
+        $row['state_id'] = $data['state_id'];
+        $row['city_id'] = $data['city_id'];
+        $row['play_times'] = $data['play_times'];
+        $row['created_at'] = $data['created_at'];
+        
+        $jsonObj['data'][] = $row;
+    }
+
+    $set[$API_NAME] = $jsonObj;
+    header('Content-Type: application/json; charset=utf-8');
+    echo str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    die();  
 }else if ($get_helper['helper_name'] == "signup") {
 
     $email = isset($get_helper['user_email']) ? addslashes(trim($get_helper['user_email'])) : '';

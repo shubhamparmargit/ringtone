@@ -96,7 +96,7 @@
                 }
             </style>
             
-            <div class="col-xxl-3 col-md-6">
+            <!-- <div class="col-xxl-3 col-md-6">
                 <div class="card card-raised border-start border-primary border-4">
                     <div class="card-body px-4">
                         <div class="d-flex justify-content-between align-items-center">
@@ -108,7 +108,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             
             <div class="col-xxl-3 col-md-6">
                 <div class="card card-raised border-start border-info border-4">
@@ -124,20 +124,8 @@
                 </div>
             </div>
             
-            <div class="col-xxl-3 col-md-6">
-                <div class="card card-raised border-start border-danger border-4">
-                    <div class="card-body px-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="me-2">
-                                <div class="display-6"><?php echo thousandsNumberFormat($total_ringtone_ap); ?></div>
-                                <div class="d-block mb-1 text-muted">Ringtone Approval</div>
-                            </div>
-                            <div class="d-inline-flex text-danger nsofts-icon "><i class="ri-folder-music-line"></i></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
+         
+<!--             
             <div class="col-xxl-3 col-md-6">
                 <div class="card card-raised border-start border-success border-4">
                     <div class="card-body px-4">
@@ -150,7 +138,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             
             <div class="col-xxl-3 col-md-6">
                 <div class="card card-raised border-start border-warning border-4">
@@ -210,7 +198,7 @@
                                 <select class="form-control" name="filterByYear" style="width: 120px;" >
                                 <?php 
                                     $currentYear=date('Y');
-                                    $minYear=2022;
+                                    $minYear=2024;
                                     for ($i=$currentYear; $i >= $minYear ; $i--) { 
                                 ?>
                                 <option value="<?=$i?>" <?=(isset($_GET['filterByYear']) && $_GET['filterByYear']==$i) ? 'selected' : ''?>><?=$i?></option>

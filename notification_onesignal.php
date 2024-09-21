@@ -37,7 +37,7 @@
             print($fields);
             
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
+            curl_setopt($ch, CURLOPT_URL, "https://api.onesignal.com/notifications?c=push");
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
                                                        'Authorization: Basic '.ONESIGNAL_REST_KEY));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -68,7 +68,7 @@
             print($fields);
             
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
+            curl_setopt($ch, CURLOPT_URL, "https://api.onesignal.com/notifications?c=push");
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
                                                        'Authorization: Basic '.ONESIGNAL_REST_KEY));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);

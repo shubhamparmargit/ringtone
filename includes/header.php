@@ -171,19 +171,19 @@ $mysqli->set_charset("utf8mb4");
                     </a>
                 </li>
                 
-                <li class="nsofts-sidebar-nav__item">
-                    <a href="manage_ringtone_approval.php" class="nsofts-sidebar-nav__link <?php if ($currentFile == "manage_ringtone_approval.php") { ?>active<?php } ?>">
-                        <i class="ri-folder-music-line nsofts-sidebar-nav__icon"></i>
-                        <span class="nsofts-sidebar-nav__text">Ringtone Approval</span>
-                    </a>
-                </li>
+                <!--<li class="nsofts-sidebar-nav__item">-->
+                <!--    <a href="manage_ringtone_approval.php" class="nsofts-sidebar-nav__link <?php if ($currentFile == "manage_ringtone_approval.php") { ?>active<?php } ?>">-->
+                <!--        <i class="ri-folder-music-line nsofts-sidebar-nav__icon"></i>-->
+                <!--        <span class="nsofts-sidebar-nav__text">Ringtone Approval</span>-->
+                <!--    </a>-->
+                <!--</li>-->
                 
-                <li class="nsofts-sidebar-nav__item">
-                    <a href="manage_banner.php" class="nsofts-sidebar-nav__link <?php if ($currentFile == "manage_banner.php" or $currentFile == "create_banner.php") { ?>active<?php } ?>">
-                        <i class="ri-list-check-2 nsofts-sidebar-nav__icon"></i>
-                        <span class="nsofts-sidebar-nav__text">Home Banner</span>
-                    </a>
-                </li>
+                <!--<li class="nsofts-sidebar-nav__item">-->
+                <!--    <a href="manage_banner.php" class="nsofts-sidebar-nav__link <?php if ($currentFile == "manage_banner.php" or $currentFile == "create_banner.php") { ?>active<?php } ?>">-->
+                <!--        <i class="ri-list-check-2 nsofts-sidebar-nav__icon"></i>-->
+                <!--        <span class="nsofts-sidebar-nav__text">Home Banner</span>-->
+                <!--    </a>-->
+                <!--</li>-->
 
                 <li class="nsofts-sidebar-nav__item nsofts-has-menu">
                     <a href="javascript:void(0)" class="nsofts-sidebar-nav__link <?php if ($currentFile == "notification_onesignal.php" or $currentFile == "notification_user.php") { ?>open active<?php } ?>">
@@ -194,9 +194,9 @@ $mysqli->set_charset("utf8mb4");
                         <li>
                             <a href="notification_onesignal.php" class="nsofts-submenu__link <?php if ($currentFile == "notification_onesignal.php") { ?>active<?php } ?>">Push Notification</a>
                         </li>
-                        <li>
-                            <a href="notification_user.php" class="nsofts-submenu__link <?php if ($currentFile == "notification_user.php") { ?>active<?php } ?>">Notify a User</a>
-                        </li>
+                        <!--<li>-->
+                        <!--    <a href="notification_user.php" class="nsofts-submenu__link <?php if ($currentFile == "notification_user.php") { ?>active<?php } ?>">Notify a User</a>-->
+                        <!--</li>-->
                     </ul>
                 </li>
               
@@ -230,35 +230,32 @@ $mysqli->set_charset("utf8mb4");
                                 <span class="nsofts-sidebar-nav__text">Settings</span>
                             </a>
                             <ul class="nsofts-submenu <?php if ($currentFile == "settings_app.php" or $currentFile == "settings.php" or $currentFile == "settings_ads.php") { ?>show<?php } ?>">
+                                <!--<li>-->
+                                <!--    <a href="settings.php" class="nsofts-submenu__link <?php if ($currentFile == "settings.php") { ?>active<?php } ?>">Admin Settings</a>-->
+                                <!--</li>-->
                                 <li>
-                                    <a href="settings.php" class="nsofts-submenu__link <?php if ($currentFile == "settings.php") { ?>active<?php } ?>">Admin Settings</a>
+                                    <a href="settings_app.php" class="nsofts-submenu__link <?php if ($currentFile == "settings_app.php") { ?>active<?php } ?>">App Notification</a>
                                 </li>
-                                <li>
-                                    <a href="settings_app.php" class="nsofts-submenu__link <?php if ($currentFile == "settings_app.php") { ?>active<?php } ?>">App Settings</a>
-                                </li>
-                                <li>
-                                    <a href="settings_ads.php" class="nsofts-submenu__link <?php if ($currentFile == "settings_ads.php") { ?>active<?php } ?>">Advertisement</a>
-                                </li>
+                                <!--<li>-->
+                                <!--    <a href="settings_ads.php" class="nsofts-submenu__link <?php if ($currentFile == "settings_ads.php") { ?>active<?php } ?>">Advertisement</a>-->
+                                <!--</li>-->
                             </ul>
                         </li>
-                        <?php /*
-                        <li class="nsofts-sidebar-nav__item">
-                            <a href="verification.php" class="nsofts-sidebar-nav__link <?php if ($currentFile == "verification.php") { ?>active<?php } ?>">
-                                <i class="ri-shield-check-line nsofts-sidebar-nav__icon"></i>
-                                <span class="nsofts-sidebar-nav__text">Verification</span>
-                            </a>
-                        </li>
-                         */?>
+                     <!--<li class="nsofts-sidebar-nav__item">-->
+                     <!--       <a href="verification.php" class="nsofts-sidebar-nav__link <?php if ($currentFile == "verification.php") { ?>active<?php } ?>">-->
+                     <!--           <i class="ri-shield-check-line nsofts-sidebar-nav__icon"></i>-->
+                     <!--           <span class="nsofts-sidebar-nav__text">Verification</span>-->
+                     <!--       </a>-->
+                     <!--   </li>-->
                     <?php } ?>
                 <?php } ?>
-                <?php /*
-                <li class="nsofts-sidebar-nav__item">
-                    <a href="api_urls.php" class="nsofts-sidebar-nav__link <?php if ($currentFile == "api_urls.php") { ?>active<?php } ?>">
-                        <i class="ri-links-line nsofts-sidebar-nav__icon"></i>
-                        <span class="nsofts-sidebar-nav__text">URLs</span>
-                    </a>
-                </li>
-                 */?>
+                
+                <!--<li class="nsofts-sidebar-nav__item">-->
+                <!--    <a href="api_urls.php" class="nsofts-sidebar-nav__link <?php if ($currentFile == "api_urls.php") { ?>active<?php } ?>">-->
+                <!--        <i class="ri-links-line nsofts-sidebar-nav__icon"></i>-->
+                <!--        <span class="nsofts-sidebar-nav__text">URLs</span>-->
+                <!--    </a>-->
+                <!--</li>-->
             </ul>
         </nav>
     </aside>
